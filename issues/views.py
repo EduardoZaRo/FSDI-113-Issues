@@ -19,9 +19,9 @@ class IssueListView(LoginRequiredMixin, ListView):
     model = Issue
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        archived_status = Team.objects.get(name=self.request.user.team)
+        team = Team.objects.get(name=self.request.user.team)
         context["issue_list"] = Issue.objects.filter(
-            reporter__team=archived_status
+            reporter__team=team
         ).order_by("created_on").reverse()
         return context
 
