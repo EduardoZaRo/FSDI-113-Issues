@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Issues{% endblock title %}
+
+{% block content %}
+<h1>Issues</h1>
+<a class="btn btn-success" href="{% url 'new' %}">Add Issue</a>
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th scope="col">Summary</th>
+            <th scope="col">Status</th>
+            <th scope="col">Group</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            {% if user.role|stringformat:"s" == "scrum master" %}
+            <th scope="col">Assign task</th>
+            {% endif %}
+            {% if user.role|stringformat:"s" == "developer" %}
+            <th scope="col">Update status</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% if issue_list|length == 0 %}
+        <tr>
+            <td colspan="6" style="text-align:center;">No Issues to see!</td>
+        </tr>
+        {% else %}
+        {% for issue in issue_list %}
+        <tr>
+            <td>{{ issue.summary |truncatewords:50}}</td>
+            <td>{{ issue.status}}</td>
+            <td>{{user.team}}</td>
+            <td><a class="btn btn-warning" href="{% url 'edit' issue.id %}">Edit</a></td>
+            <td><a class="btn btn-danger" href="{% url 'delete' issue.id %}">Delete</a></td>
+            {% if user.role|stringformat:"s" == "scrum master" %}
+            <td><a class="btn btn-secondary" href="{% url 'assign' issue.id %}">Assign</a></td>
+            {% endif %}
+            {% if user.role|stringformat:"s" == "developer" %}
+            <td><a class="btn btn-secondary" href="{% url 'update-status' issue.id %}">Update status</a></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content %}

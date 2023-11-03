@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Forbidden (403) {% endblock title %}
+
+{% block content %}
+<style>
+    .container h1, 
+    .container p{
+        text-align:center;
+        padding-top:20px;
+    }
+</style>
+<h1>Forbidden (403)</h1>
+<p>You are not allowed to access this page.</p>
+<p>Your role is {{user.role}}</p>
+{% endblock content %}

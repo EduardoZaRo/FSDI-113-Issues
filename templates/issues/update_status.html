@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Update status Issue{% endblock title %}
+
+{% block content %}
+<h1>Update status of Issue: {{ issue.summary|truncatewords:5}}</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-success" value="Assign">
+</form>
+{% endblock content %}
