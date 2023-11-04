@@ -18,13 +18,28 @@ class IssueListView(LoginRequiredMixin, ListView):
     template_name = "issues/list.html"
     model = Issue
     def get_context_data(self, **kwargs):
+        # if(str(self.request.user.role) == "developer"):
+        #     context = super().get_context_data(**kwargs)
+        #     team = Team.objects.get(name=self.request.user.team)
+        #     context["issue_list"] = Issue.objects.filter(
+        #         reporter__team=team
+        #     ).order_by("created_on").reverse()
+        #     return context
+        context = super().get_context_data(**kwargs)
+        context["issue_list"] = Issue.objects.order_by("created_on").reverse()
+        return context
+class IssueListByTeamView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    template_name = "issues/list_by_team.html"
+    model = Issue
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         team = Team.objects.get(name=self.request.user.team)
         context["issue_list"] = Issue.objects.filter(
             reporter__team=team
         ).order_by("created_on").reverse()
         return context
-
+    def test_func(self):
+        return str(self.request.user.role) == "developer"
 class IssueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = "issues/new.html"
     model = Issue

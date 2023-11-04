@@ -4,8 +4,40 @@
 
 {% block content %}
 <h1>Issues</h1>
+{% if user.role|stringformat:"s" == "product owner" %}
 <a class="btn btn-success" href="{% url 'new' %}">Add Issue</a>
-<table class="table table-responsive">
+{% endif %}
+{% if user.role|stringformat:"s" == "developer" %}
+<a class="btn btn-success" href="{% url 'list-by-team' %}">See issues related to my team</a>
+{% endif %}
+<hr>
+<div class="cards-container">
+    {% for issue in issue_list %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ issue.summary }}</h5>
+            <p class="card-text">Description:<br>{{ issue.description | truncatechars:128}}</p>
+            <p class="card-text">Status: {{ issue.status }}</p>
+            <p class="card-text">Created on: {{ issue.created_on }}</p>
+            {% if user.role|stringformat:"s" == "scrum master" %}
+            <a class="btn btn-secondary" href="{% url 'assign' issue.id %}">Assign</a>
+            {% endif %}
+            {% if user.role|stringformat:"s" == "product owner" %}
+            <a class="btn btn-warning" href="{% url 'edit' issue.id %}">Edit</a>
+            {% endif %}
+            {% if user.role|stringformat:"s" == "scrum master" %}
+            <a class="btn btn-danger" href="{% url 'delete' issue.id %}">Delete</a>
+            {% endif %}
+            {% if user.role|stringformat:"s" == "developer" %}
+            <a class="btn btn-secondary" href="{% url 'update-status' issue.id %}">Update status</a>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+
+<!-- <table class="table table-responsive">
     <thead>
         <tr>
             <th scope="col">Summary</th>
@@ -44,5 +76,5 @@
         {% endfor %}
         {% endif %}
     </tbody>
-</table>
+</table> -->
 {% endblock content %}

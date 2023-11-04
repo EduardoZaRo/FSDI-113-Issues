@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Issues{% endblock title %}
+
+{% block content %}
+<h1>Issues related to {{user.team}}</h1>
+<hr>
+<div class="cards-container">
+    {% for issue in issue_list %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ issue.summary }}</h5>
+            <p class="card-text">Description:<br>{{ issue.description | truncatechars:128}}</p>
+            <p class="card-text">Status: {{ issue.status }}</p>
+            <p class="card-text">Created on: {{ issue.created_on }}</p>
+            <a class="btn btn-secondary" href="{% url 'update-status' issue.id %}">Update status</a>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+{% endblock content %}
