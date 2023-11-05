@@ -14,20 +14,16 @@ from django.core.exceptions import PermissionDenied
 
 from .models import Issue, Status
 from accounts.models import Team
+from .forms import FormAssignDeveloper
+
 class IssueListView(LoginRequiredMixin, ListView):
     template_name = "issues/list.html"
     model = Issue
     def get_context_data(self, **kwargs):
-        # if(str(self.request.user.role) == "developer"):
-        #     context = super().get_context_data(**kwargs)
-        #     team = Team.objects.get(name=self.request.user.team)
-        #     context["issue_list"] = Issue.objects.filter(
-        #         reporter__team=team
-        #     ).order_by("created_on").reverse()
-        #     return context
         context = super().get_context_data(**kwargs)
         context["issue_list"] = Issue.objects.order_by("created_on").reverse()
         return context
+
 class IssueListByTeamView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "issues/list_by_team.html"
     model = Issue
@@ -40,6 +36,7 @@ class IssueListByTeamView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return context
     def test_func(self):
         return str(self.request.user.role) == "developer"
+    
 class IssueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = "issues/new.html"
     model = Issue
@@ -60,16 +57,16 @@ class IssueDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("list")
     def test_func(self):
         return str(self.request.user.role) == "scrum master"
-    
+
 class IssueAssignView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "issues/assign.html"
     model = Issue
-    fields = ["assignee"]
+    form_class = FormAssignDeveloper
     def test_func(self):
         return str(self.request.user.role) == "scrum master"
 
 class IssueUpdateStatusView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    template_name = "issues/assign.html"
+    template_name = "issues/update_status.html"
     model = Issue
     fields = ["status"]
     def test_func(self):

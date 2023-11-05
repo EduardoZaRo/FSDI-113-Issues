@@ -2,3 +2,9 @@
     margin:0;
     padding:0;
 }
+.navbar{
+    background:lightyellow!important;
+}
+.navbar li{
+    border-right: 1px solid lightpink;
+}
